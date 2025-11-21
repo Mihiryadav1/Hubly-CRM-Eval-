@@ -1,0 +1,91 @@
+.sub-container {
+    background-color: #e1eefa79;
+    padding: 4rem 0;
+
+    & .sub-content {
+        /* background-color: green; */
+        max-width: 70%;
+        margin: 0 auto;
+        margin-bottom: 2rem;
+        text-align: center;
+
+        & h2 {
+            font-size: 2.5rem;
+            line-height: 1.5;
+            font-weight: 700;
+            font-family: var(--barlow-font);
+        }
+
+        & p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-top: 1rem;
+            font-family: var(--barlow-font);
+        }
+
+    }
+
+
+    & .cards-container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        min-height: 300px;
+        max-width: 85%;
+        margin: 0 auto;
+
+        & .sub-card {
+            border-radius: 8px;
+            background-color: var(--white);
+            padding: 2rem;
+            margin: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+            & h3 {
+                font-size: 2.5rem;
+                font-family: var(--barlow-font);
+            }
+
+            & p {
+                font-size: 1.2rem;
+                margin: 1rem 0;
+                font-family: var(--barlow-font);
+            }
+
+            & .pricing {
+                color: var(--sky-blue);
+
+                & span {
+                    font-family: var(--barlow-font);
+                    font-weight: 700;
+                    font-size: 3.5rem;
+
+                }
+
+                & sub {
+                    font-family: var(--barlow-font);
+                    color: var(--secondary-gray);
+                    font-size: 1.2rem;
+                }
+
+            }
+
+            & ul {
+                font-family: var(--barlow-font);
+                list-style: none
+            }
+
+            & .select-btn {
+                font-family: var(--barlow-font);
+                width: 100%;
+                border-radius: 1.5rem;
+                text-transform: uppercase;
+                padding: 1.2rem;
+                margin-top: 4rem;
+                border: none;
+                color: var(--primary);
+                font-weight: 700;
+            }
+        }
+    }
+}

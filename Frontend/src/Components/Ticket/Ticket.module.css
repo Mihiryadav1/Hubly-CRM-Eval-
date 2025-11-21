@@ -1,0 +1,15 @@
+.ticket-container {
+    border: 1px solid lightgray;
+    padding: 1rem;
+    min-height: 15vh;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.ticket-footer {
+    border-top: 1px solid lightgrey;
+    padding: 10px 0;
+}

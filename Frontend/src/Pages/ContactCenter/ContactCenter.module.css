@@ -1,0 +1,39 @@
+.contactcenter-container {
+    display: grid;
+    background-color: red;
+    grid-template-columns: 1fr 2fr 1fr;
+}
+
+.chats-container {
+    height: 100vh;
+    background-color: red;
+}
+
+.chatbox {
+    height: 100vh;
+    background-color: green;
+}
+
+.ticket-assign {
+    height: 100vh;
+    background-color: red;
+}
+
+.ticketItem {
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.active {
+    border-radius: 2rem;
+    background-color: var(--secondary-gray);
+}
