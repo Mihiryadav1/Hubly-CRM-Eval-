@@ -46,12 +46,6 @@ const ChatSettings = () => {
         </div>
 
         <div className={styles['chatbox-messagePreview']} >
-          {/* <div className={styles["message"]} >
-            <div className={styles["avatar"]} style={{ textAlign: "center", position: "relative" }}>
-              <img src="/hublychatbot.png" alt="" style={{ position: "absolute", top: 0, left: "50%", transform: "translate(-50%,-100%)" }} />
-              <p style={{ margin: "1rem", textAlign: "left" }}>{chatBoxTheme.welcomeMessage}</p>
-            </div>
-          </div> */}
           <Welcome chatBoxTheme={chatBoxTheme} />
         </div>
       </div>

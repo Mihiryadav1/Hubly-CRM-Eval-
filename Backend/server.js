@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import { configDotenv } from 'dotenv'
 import { connectToMongoDB } from './config/db.js'
+import session from 'express-session'
 import authRoutes from './routes/auth.routes.js'
 import teamRoutes from './routes/team.routes.js'
 import ticketRoutes from './routes/ticket.route.js'
@@ -15,7 +16,18 @@ const app = express();
 
 //middlewares
 app.use(express.json());
-app.use(cors())
+app.use(cors({
+    origin: "http://localhost:5173",  // your frontend
+    credentials: true                 // ALLOW sending cookies
+}));
+app.use(
+    session({
+        secret: `${process.env.SESSION_SECRET}`,
+        resave: false,
+        saveUninitialized: true,
+        cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // 7 days
+    })
+);
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes)
 app.use("/api/team", teamRoutes);

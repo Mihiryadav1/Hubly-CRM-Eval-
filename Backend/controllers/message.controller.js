@@ -1,11 +1,11 @@
 import Message from "../models/message.model.js";
 import Ticket from "../models/ticket.model.js";
-
+//For Users
 export const addMessageToTicket = async (req, res) => {
     try {
         const ticketId = req.params.ticketId;
         const { text } = req.body;
-
+        console.log(req.user)
         // Find ticket by custom ticketId
         const ticket = await Ticket.findById(ticketId);
         if (!ticket) {
@@ -14,10 +14,43 @@ export const addMessageToTicket = async (req, res) => {
 
         const newMessage = new Message({
             ticketId: ticket._id,
+            sender: "user",
+            senderId:  null,
+            text,
+
+        });
+        console.log(newMessage, 'newmessage')
+
+        await newMessage.save();
+
+        res.status(201).json({
+            message: "Message added",
+            chat: newMessage,
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+export const addMessageToTicketForTeam = async (req, res) => {
+    try {
+        const ticketId = req.params.ticketId;
+        const { text } = req.body;
+        console.log(req.user)
+        // Find ticket by custom ticketId
+        const ticket = await Ticket.findById(ticketId);
+        if (!ticket) {
+            return res.status(404).json({ message: "Ticket not found" });
+        }
+
+        const newMessage = new Message({
+            ticketId: ticket._id,
+            sender: "team",
             senderId: req.user.userId,
             text,
 
         });
+        console.log(newMessage, 'newmessage')
 
         await newMessage.save();
 

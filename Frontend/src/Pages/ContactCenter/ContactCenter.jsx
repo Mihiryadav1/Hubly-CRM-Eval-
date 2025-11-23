@@ -30,7 +30,7 @@ const ContactCenter = () => {
   const getAllTickets = async () => {
     const token = sessionStorage.getItem("token")
     await axios.get(
-      `${import.meta.env.VITE_BACKEND_URL}/ticket`,
+      `${import.meta.env.VITE_BACKEND_URL}/ticket/`,
       { headers: { Authorization: `Bearer ${token}` } }
     ).then(res => {
       console.log(res.data, "ticketsabbe")
@@ -129,7 +129,7 @@ const ContactCenter = () => {
 
     try {
       await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/message/${activeTicket._id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/message/team/${activeTicket._id}`,
         {
           text: newMessage
         },

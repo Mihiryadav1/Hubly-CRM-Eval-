@@ -1,7 +1,87 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from "./Chatbot.module.css"
+import formStyle from "../ChatComponents/HomeScreenChatbox.module.css"
+import { BiSolidSend } from "react-icons/bi"
+import axios from 'axios'
+import { toast } from 'react-toastify';
 const Chatbot = ({ theme }) => {
   const { header, bgColor, firstMessage, secondMessage } = theme
+  const [message, setMessage] = useState('')
+  const [customerForm, setCustomerForm] = useState({
+    name: "",
+    email: "",
+    phone: ""
+  })
+  const [ticketId, setTicketId] = useState(null)
+  const [allMessages, setAllMessages] = useState([])
+  //Create Customer Ticket
+  const createTicket = async (e) => {
+    e.preventDefault()
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/ticket/createTicket`,
+        {
+          name: customerForm.name,
+          email: customerForm.email,
+          phone: customerForm.phone
+        }
+      ).then(res => {
+        console.log(res.data.ticket._id)
+        localStorage.setItem("ticketId", res.data.ticket._id)
+        setTicketId(res.data.ticket._id)
+        toast("Ticket Created!", { type: "success" });
+
+      })
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  //Send Message
+  const handleSendMessage = async () => {
+    try {
+      const ticketId = localStorage.getItem('ticketId')
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/message/${ticketId}`,
+        {
+          text: message
+        }
+      ).then(res => {
+        console.log(res)
+        setMessage('')
+        getMessages()
+      })
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleFormChange = async (e) => {
+    const { name, value } = e.target
+    setCustomerForm(prev => ({ ...prev, [name]: value }))
+  }
+  const getMessages = async () => {
+    try {
+      const ticketId = localStorage.getItem("ticketId")
+      await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/message/${ticketId}/`
+      ).then(res => {
+        console.log(res.data, 'messages')
+        setAllMessages(res.data.messages)
+      })
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => {
+    const ticketId = localStorage.getItem("ticketId")
+    if (ticketId) getMessages()
+  }, [])
+  useEffect(() => {
+    getMessages()
+  }, [])
   return (
     <div className={styles['chatbot-container']}>
       <div className={styles["chat-header"]} style={{ backgroundColor: `${header}` }}>
@@ -38,9 +118,57 @@ const Chatbot = ({ theme }) => {
               wordBreak: "break-word"
             }}>{secondMessage}</div></div>
         </div>
+        <div style={{
+          display: "flex",
+          justifyContent: "flex-end",
+
+        }}>
+          <div action="" style={{ borderRadius: "10px", display: "inline-block", padding: "10px", marginTop: "10px" }}>
+            <div className={formStyle['configuration-cards']}>
+              <p>Introduction Form</p>
+              {
+                !ticketId && (
+                  <form onSubmit={createTicket}>
+                    <div className={formStyle['input-group']}>
+                      <label htmlFor="name">Your name</label>
+                      <input type="text" name='name' placeholder='Your name' value={customerForm.name} onChange={handleFormChange} />
+                    </div>
+                    <div className={formStyle['input-group']}>
+                      <label htmlFor="phone">Your Phone</label>
+                      <input type="text" name='phone' placeholder='+1 (000) 10 - 000' value={customerForm.phone} onChange={handleFormChange} />
+                    </div>
+                    <div className={formStyle['input-group']}>
+                      <label htmlFor="email">Your Email</label>
+                      <input type="email" name='email' placeholder='example@gmail.com' value={customerForm.email} onChange={handleFormChange} />
+                    </div>
+                    <div style={{ textAlign: "center" }}>  <button className={formStyle['thankBtn']}>Thank You</button></div>
+                  </form>
+                )
+              }
+            </div>
+            <div className="userMessages">
+              {
+                allMessages.map(message => {
+                  return <>
+                    <p style={{
+                      padding: "10px", boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
+                      borderRadius: "10px",
+                      marginBottom: "5px",
+                      backgroundColor: "white",
+                      wordBreak: "break-word"
+                    }}>{message.text}</p>
+                  </>
+                })
+              }
+            </div>
+          </div>
+        </div>
       </div>
       <div className={styles["textBox"]}>
-        <textarea name="message" id="" placeholder='Write a message'></textarea>
+        <textarea name="message" id="" placeholder='Write a message' value={message} onChange={(e) => {
+          setMessage(e.target.value)
+        }}></textarea>
+        <p className={styles['sendBtn']} onClick={handleSendMessage}><BiSolidSend /></p>
       </div>
 
     </div >

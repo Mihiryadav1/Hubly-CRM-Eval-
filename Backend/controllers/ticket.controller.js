@@ -4,15 +4,17 @@ import User from "../models/users.model.js";
 export const createTicket = async (req, res) => {
     try {
         const { name, email, phone } = req.body;
+        const userId = req
+        console.log(userId)
         //Check if user already has a ticket
-        // const existingTicket = await Ticket.findOne({ userId: req.user.userId });
-        // if (existingTicket) {
-        //     return res.status(200).json({
-        //         message: "Ticket already exists for this user",
-        //         ticket: existingTicket,
-        //         alreadyExists: true
-        //     });
-        // }
+        const existingTicket = await Ticket.findOne({ email });
+        if (existingTicket) {
+            return res.status(200).json({
+                message: "Ticket already exists for this user",
+                ticket: existingTicket,
+                alreadyExists: true
+            });
+        }
 
         // Find admin
         const adminUser = await User.findOne({ role: "admin" });
@@ -34,7 +36,7 @@ export const createTicket = async (req, res) => {
 
         //Save Ticket to DB
         await newTicket.save();
-
+        
         res.status(201).json({
             message: "Ticket Created Successfully",
             ticket: newTicket
