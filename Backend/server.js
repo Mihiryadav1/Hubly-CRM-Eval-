@@ -17,7 +17,10 @@ const app = express();
 //middlewares
 app.use(express.json());
 app.use(cors({
-    origin: "http://localhost:5173",  // your frontend
+    origin: [
+        "http://localhost:5173",
+        "https://hubly-crm-eval.onrender.com"
+    ], 
     credentials: true                 // ALLOW sending cookies
 }));
 app.use(
