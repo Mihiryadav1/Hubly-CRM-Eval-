@@ -23,7 +23,7 @@ const HomeScreenChatbox = () => {
     const getChatbotConfig = async () => {
         try {
             const res = await axios.get(
-                `${import.meta.env.VITE_BACKEND_URL}/chatbot/`
+                `${import.meta.env.VITE_BACKEND_URL}/chatbot`
             );
 
             const chatBotConfig = res.data.chatConfig.chatBotConfig
