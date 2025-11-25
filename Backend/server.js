@@ -17,12 +17,17 @@ const app = express();
 //middlewares
 app.use(express.json());
 app.use(cors({
-    origin: [
-        "http://localhost:5173",
-        "https://hubly-crm-eval.onrender.com"
-    ], 
-    credentials: true                 // ALLOW sending cookies
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true); 
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        } else {
+            return callback(new Error("Not allowed by CORS: " + origin));
+        }
+    },
+    credentials: true,
 }));
+
 app.use(
     session({
         secret: `${process.env.SESSION_SECRET}`,
