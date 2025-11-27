@@ -20,13 +20,20 @@ app.use(express.json());
 const allowedOrigins = [
     "http://localhost:5173",
     "https://hubly-crm-eval.onrender.com",
-    "https://hublycrm-frontend.vercel.app//"
+    "https://hublycrm-frontend.vercel.app/"
 ];
 
 /* ----------------------------- FIXED CORS ----------------------------- */
 
 app.use(cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+
     credentials: true,
 }));
 
@@ -50,7 +57,7 @@ app.use("/api/message", messageRoutes)
 app.use("/api/chatbot", chatbotRoutes)
 app.use("/api/analytics", analyticsRoutes)
 
- 
+
 // // Server Test Route
 app.get("/", (req, res) => {
     res.send("<h1>Server Up</h1>");
