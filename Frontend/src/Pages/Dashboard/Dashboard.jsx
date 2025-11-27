@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styles from "./Dashboard.module.css"
 import { IoMail } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
@@ -6,13 +6,12 @@ import Ticket from '../../Components/Ticket/Ticket';
 import axios from 'axios'
 
 const Dashboard = () => {
-
     // States
+    const timeoutId = useRef(null)
     const [filter, setFilter] = useState('all')
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('')
-    let timeoutId;
     // Functions
     const fetchTickets = async () => {
         try {
@@ -49,12 +48,20 @@ const Dashboard = () => {
     });
     const searchTicket = (e) => {
         const value = e.target.value;
+        if (timeoutId.current) clearTimeout(timeoutId.current);
 
-        clearTimeout(timeoutId);
-
-        timeoutId = setTimeout(() => {
+        timeoutId.current = setTimeout(() => {
             setSearch(value);
-        }, 400); // debounce delay
+            if (value && tickets.length > 0) {
+                const found = tickets.some(ticket =>
+                    ticket.ticketId?.toLowerCase().includes(value.toLowerCase())
+                );
+                if (!found) {
+                    alert("Ticket not found");
+                }
+            }
+
+        }, 500);
     };
 
 
@@ -68,18 +75,34 @@ const Dashboard = () => {
                 <input type="text" style={{ border: "1px solid #c7c5c5", borderLeft: "0", margin: "1rem 0", width: "20vw", borderTopLeftRadius: "0", borderBottomLeftRadius: "0" }} placeholder={`Search for ticket`} onChange={searchTicket} />
             </p>
             <ul className={styles['ticket-filters']}>
-                <li className={styles['filter']} style={{
-                    display: "flex", justifyContent: "center", alignItems: "center", gap: "5px"
-                }} onClick={() => setFilter("all")}>
-                    <span className={styles['icon']}><IoMail /></span>
+                <span className={styles['icon']}><IoMail /></span>
+                <li
+                    className={`${styles['filter']} ${filter === "all" ? styles['active-filter'] : ""}`}
+                    onClick={() => setFilter("all")}
+                >
                     <span>All Tickets</span>
                 </li>
-                <li className={styles['filter']} onClick={() => setFilter("resolved")}> <span>Resolved</span></li>
-                <li className={styles['filter']} onClick={() => setFilter("unresolved")}> <span>Unresolved</span></li>
+
+                <li
+                    className={`${styles['filter']} ${filter === "resolved" ? styles['active-filter'] : ""}`}
+                    onClick={() => setFilter("resolved")}
+                >
+                    <span>Resolved</span>
+                </li>
+
+                <li
+                    className={`${styles['filter']} ${filter === "unresolved" ? styles['active-filter'] : ""}`}
+                    onClick={() => setFilter("unresolved")}
+                >
+                    <span>Unresolved</span>
+                </li>
+
             </ul>
             <div className={styles['show-tickets']}>
                 {
-                    loading ? (<p>Loading...</p>) : (
+                    loading ? (<p>Loading...</p>) : filteredTickets.length === 0 ? (<p style={{ textAlign: "center", marginTop: "2rem", color: "#777", fontSize: "1.1rem" }}>
+                        No tickets found
+                    </p>) : (
                         filteredTickets.map(ticket => {
                             return <Ticket key={ticket._id} ticketId={ticket.ticketId} createdAt={ticket.createdAt} createdBy={ticket.name} email={ticket.email} phone={ticket.phone} status={ticket.status} />
                         })
