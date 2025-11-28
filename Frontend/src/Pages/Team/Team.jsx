@@ -143,9 +143,9 @@ const Team = () => {
                         className={styles["icon"]}
                         onClick={() => {
                           console.log('clicked')
+                          setSelectedId(null);
                           setIsEditing(true)
                           // setSelectedId(teamMembers._id)
-                          setSelectedId(null);
                           setEditDetails({
                             name: teamMembers.name,
                             email: teamMembers.email,
@@ -154,7 +154,7 @@ const Team = () => {
                           });
                         }}
                       >
-                        <CiEdit />
+                        <span><CiEdit /></span>
                       </button>
 
 
