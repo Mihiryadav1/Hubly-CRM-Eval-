@@ -13,7 +13,7 @@ const ChatSettings = () => {
   const [chatBoxTheme, setChatBoxTheme] = useState({
     headerColor: "#fff",
     bgColor: "#fff",
-    firstMessage: "How cani help you ?",
+    firstMessage: "How can i help you ?",
     secondMessage: "Ask me anything",
     welcomeMessage: "Want to chat about Hubly? I'm a chatbot here to help you find your way.",
     introduceHeading: "Introduce Yourself",
@@ -28,17 +28,7 @@ const ChatSettings = () => {
     try {
       await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/chatbot/chatbotconfig`,
-        {
-          "headerColor": `${chatBoxTheme.headerColor}`,
-          "bgColor": `${chatBoxTheme.bgColor}`,
-          "firstMessage": `${chatBoxTheme.firstMessage}`,
-          "secondMessage": `${chatBoxTheme.secondMessage}`,
-          "welcomeMessage": `${chatBoxTheme.welcomeMessage}`,
-          "nameLabel": `${chatBoxTheme.nameLabel}`,
-          "emailLabel": `${chatBoxTheme.emailLabel}`,
-          "phoneLabel": `${chatBoxTheme.phoneLabel}`,
-          "introduceHeading": `${chatBoxTheme.introduceHeading}`,
-        }
+        chatBoxTheme
       ).then(res => {
         console.log(res.data);
         toast("Chatbot settings saved!", { type: "success" });
