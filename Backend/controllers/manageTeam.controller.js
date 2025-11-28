@@ -103,10 +103,10 @@ export const deleteTeamMember = async (req, res) => {
 }
 
 //Update Team Member Roles
-export const updateTeamMemberRole = async (req, res) => {
+export const updateTeamMember = async (req, res) => {
     try {
         const { memberId } = req.params;
-        const { role } = req.body;
+        const { name, email, password, role } = req.body;
 
         //Only admin can update the roles
         if (req.user.role !== "admin") {
@@ -120,8 +120,20 @@ export const updateTeamMemberRole = async (req, res) => {
         }
 
         //Update Role
+        memberToUpdate.name = name;
         memberToUpdate.role = role;
+        memberToUpdate.email = email;
+        //Hash incoming password
+        if (password && password.trim() !== "") {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            memberToUpdate.password = hashedPassword;
+        }
         await memberToUpdate.save()
+
+        res.status(200).json({
+            message: "Successfully updated team member details",
+            memberToUpdate
+        })
 
     } catch (error) {
         res.status(500).json({
@@ -187,7 +199,7 @@ export const updateProfile = async (req, res) => {
         res.json({
             message: "Profile updated successfully",
             user: updatedUser,
-            passwordChanged 
+            passwordChanged
         });
 
     } catch (error) {
