@@ -70,10 +70,10 @@ const Dashboard = () => {
     }, [])
     return (
         <div className={styles['dashboard-container']}>
-            <p className="flex" style={{ alignItems: "center" }}>
-                <p className="icon" style={{ border: "1px solid #c7c5c5", cursor: "pointer", borderRight: '0', height: "100%", padding: "0.38rem", display: "inline-block", borderBottomLeftRadius: "8px", borderTopLeftRadius: "8px" }}><CiSearch /> </p>
-                <input type="text" style={{ border: "1px solid #c7c5c5", borderLeft: "0", margin: "1rem 0", width: "20vw", borderTopLeftRadius: "0", borderBottomLeftRadius: "0" }} placeholder={`Search for ticket`} onChange={searchTicket} />
-            </p>
+            <div style={{ alignItems: "center", }}>
+                <div className='flex' style={{ alignItems: "center" }}><p className="icon" style={{ border: "1px solid #c7c5c5", cursor: "pointer", borderRight: '0', height: "100%", padding: "0.48rem", borderBottomLeftRadius: "10px", borderTopLeftRadius: "10px" }}><CiSearch /> </p>
+                    <input type="text" style={{ border: "1px solid #c7c5c5", borderTopRightRadius: "10px", borderBottomRightRadius: "10px", borderLeft: "0", margin: "1rem 0", width: "20vw", borderTopLeftRadius: "0", borderBottomLeftRadius: "0" }} placeholder={`Search for ticket`} onChange={searchTicket} /></div>
+            </div>
             <ul className={styles['ticket-filters']}>
                 <span className={styles['icon']}><IoMail /></span>
                 <li

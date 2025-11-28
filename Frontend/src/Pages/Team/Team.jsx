@@ -5,9 +5,11 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { MdDeleteOutline } from "react-icons/md";
 import { LiaSortSolid } from "react-icons/lia";
 import { CiEdit } from "react-icons/ci";
+import { toast } from "react-toastify";
 const Team = () => {
   const [team, setTeam] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
+  const [isEditing, setIsEditing] = useState(false)
   const [selectedSaveId, setSelectedSaveId] = useState(false);
   const [sortOrder, setSortOrder] = useState("asc");
   const [teamMemberDetails, setTeamMemberDetails] = useState({
@@ -16,6 +18,13 @@ const Team = () => {
     role: ""
 
   })
+  const [editDetails, setEditDetails] = useState({
+    name: "",
+    email: "",
+    role: "",
+    password: ""
+  });
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,18 +55,18 @@ const Team = () => {
       })
       .then((res) => {
         console.log(res);
+        getAllTeamMembers()
       });
   };
 
   const addTeamMembers = async () => {
     const token = sessionStorage.getItem("token");
-    console.log(teamMemberDetails)
     await axios
       .post(`${import.meta.env.VITE_BACKEND_URL}/team/createMember`, teamMemberDetails, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        console.log(res);
+        getAllTeamMembers()
       });
 
   }
@@ -72,6 +81,19 @@ const Team = () => {
 
     setTeam(sorted);
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  }
+
+  const handleTeamMemberEdit = async (id) => {
+    const token = sessionStorage.getItem("token");
+    // console.log(editDetails)
+    await axios.put(`${import.meta.env.VITE_BACKEND_URL}/team/${id}`, editDetails, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        console.log(res);
+        toast("Team member details saved!", { type: "success" });
+        getAllTeamMembers()
+      });
   }
   useEffect(() => {
     getAllTeamMembers();
@@ -121,6 +143,14 @@ const Team = () => {
                       <button
                         className={styles["icon"]}
                         onClick={() => {
+                          setIsEditing(true)
+                          setSelectedId(teamMembers._id);
+                          setEditDetails({
+                            name: teamMembers.name,
+                            email: teamMembers.email,
+                            role: teamMembers.role,
+                            password: ""
+                          });
                         }}
                       >
                         <CiEdit />
@@ -128,7 +158,7 @@ const Team = () => {
 
 
                     </td>
-                    {selectedId === teamMembers._id && (
+                    {!isEditing && selectedId === teamMembers._id && (
                       <div className={styles["deletepopup"]}>
                         <h3>This teammate will be deleted.</h3>
                         <div
@@ -158,6 +188,91 @@ const Team = () => {
                         </div>
                       </div>
                     )}
+
+
+
+                    {isEditing && (
+                      <div className={styles["addMemberPopup"]}>
+                        <h2>Edit Team Member</h2>
+
+                        <div className={styles["form"]}>
+                          <div className={styles["input-group"]}>
+                            <label>Full Name</label>
+                            <input
+                              type="text"
+                              value={editDetails.name}
+                              onChange={(e) =>
+                                setEditDetails({ ...editDetails, name: e.target.value })
+                              }
+                            />
+                          </div>
+
+                          <div className={styles["input-group"]}>
+                            <label>Email</label>
+                            <input
+                              type="email"
+                              value={editDetails.email}
+                              onChange={(e) =>
+                                setEditDetails({ ...editDetails, email: e.target.value })
+                              }
+                            />
+                          </div>
+
+                          <div className={styles["input-group"]}>
+                            <label>Role</label>
+                            <select
+                              value={editDetails.role}
+                              onChange={(e) =>
+                                setEditDetails({ ...editDetails, role: e.target.value })
+                              }
+                              style={{ padding: "0.5rem", borderRadius: "0.5rem" }}
+                            >
+                              <option value="">Select Role</option>
+                              <option value="user">Member</option>
+                              <option value="admin">Admin</option>
+                            </select>
+                          </div>
+
+                          <div className={styles["input-group"]}>
+                            <label>Phone</label>
+                            <input
+                              type="text"
+                              value={editDetails.phone}
+                              onChange={(e) =>
+                                setEditDetails({ ...editDetails, phone: e.target.value })
+                              }
+                            />
+                          </div>
+                        </div>
+
+                        <div style={{ display: "flex", gap: "10px" }}>
+                          {/* ✔ Confirm Button → Save changes */}
+                          <button
+                            className={styles["saveBtn"]}
+                            onClick={async () => {
+                              handleTeamMemberEdit(selectedId)
+                              getAllTeamMembers();
+                              setIsEditing(false);
+                              setSelectedId(null);
+                            }}
+                          >
+                            Confirm
+                          </button>
+
+                          {/* ❌ Cancel Button → Close popup */}
+                          <button
+                            className={styles["cancelBtn"]}
+                            onClick={() => {
+                              setIsEditing(false);
+                              setSelectedId(null);
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
                   </tr>
                 );
               })}
@@ -193,7 +308,7 @@ const Team = () => {
                   <select name="role" id="" style={{ padding: "0.5rem", borderRadius: "0.5rem" }} value={teamMemberDetails.role}
                     onChange={handleChange}>
                     <option value="">Select Role</option>
-                    <option value="user">Member</option>
+                    <option value="user" selected>Member</option>
                   </select>
                 </div>
               </div>
@@ -225,6 +340,8 @@ const Team = () => {
             </div>
           </>
         )}
+
+
       </div>
     </div>
   );

@@ -13,7 +13,8 @@ const ContactCenter = () => {
   const [showStatusPopup, setShowStatusPopup] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [selectedMember, setSelectedMember] = useState(null);
-
+  const [loadingMessages, setLoadingMessages] = useState(false);
+  const [messagesError, setMessagesError] = useState(false);
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState("")
   const [team, setTeam] = useState([])
@@ -110,17 +111,23 @@ const ContactCenter = () => {
 
   const getAllMessagesForTicketId = async (ticketId) => {
     const token = sessionStorage.getItem("token");
+    setLoadingMessages(true);
+    setMessagesError(false);
 
-    await axios.get(
-      `${import.meta.env.VITE_BACKEND_URL}/message/${ticketId}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    ).then(res => {
-      const getMessage = res.data.messages
-      console.log(res.data.messages, 'message')
-      setMessages(getMessage)
-
+    try {
+      await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/message/${ticketId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      ).then(res => {
+        const getMessage = res.data.messages
+        console.log(res.data.messages, 'message')
+        setMessages(getMessage)
+      }
+      )
+    } catch (error) {
+      console.log('Message fetch error', err);
+      setMessagesError(true);
     }
-    );
   };
 
   const handleSendMessage = async () => {
@@ -195,25 +202,27 @@ const ContactCenter = () => {
         <div className={styles['ticketList']}>
           {tickets.map(ticket => {
             const lastMessage = ticket.messages?.[ticket.messages.length - 1];
-            return (<div
-              key={ticket._id}
-              className={`${styles.ticketItem} ${activeTicket?._id === ticket._id ? styles.active : ""}`}
-              onClick={() => {
-                setActiveTicket(ticket)
-              }}
-            >
-              <img
-                src={getAvatar(ticket.name)}
-                alt={ticket.name}
-                className={styles['avatar']}
-              />
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <div style={{ color: "#3A7ABD", fontWeight: "500", fontSize: "1rem" }}>{ticket.name}</div>
-                <div className={styles.ticketLastMessage}>
-                  {lastMessage ? lastMessage.text : "No messages yet"}
+            return (
+              <div
+                key={ticket._id}
+                className={`${styles.ticketItem} ${activeTicket?._id === ticket._id ? styles.active : ""}`}
+                onClick={() => {
+                  setActiveTicket(ticket)
+                }}
+              >
+                <img
+                  src={getAvatar(ticket.name)}
+                  alt={ticket.name}
+                  className={styles['avatar']}
+                />
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <div style={{ color: "#3A7ABD", fontWeight: "500", fontSize: "1rem" }}>{ticket.name}</div>
+                  <div className={styles.ticketLastMessage}>
+                    {lastMessage ? lastMessage.text : "No messages yet"}
+                  </div>
                 </div>
               </div>
-            </div>)
+            )
           })}
         </div>
       </div>
