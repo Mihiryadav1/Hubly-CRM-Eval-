@@ -4,7 +4,7 @@ import formStyle from "../ChatComponents/HomeScreenChatbox.module.css"
 import { BiSolidSend } from "react-icons/bi"
 import axios from 'axios'
 import { toast } from 'react-toastify';
-const Chatbot = memo(({ theme, disabledforpreview, setChatBoxTheme }) => {
+const Chatbot = memo(({ theme, disabledforpreview }) => {
   const isMobile = window.innerWidth <= 600;
   const { headerColor, bgColor, firstMessage, secondMessage } = theme
   const [message, setMessage] = useState('')
@@ -48,6 +48,8 @@ const Chatbot = memo(({ theme, disabledforpreview, setChatBoxTheme }) => {
   //Send Message
   const handleSendMessage = async () => {
     if (!firstMessageSent) {
+      localStorage.setItem("FirstMessageSent", true)
+      setFirstMessageSent(true)
       setAllMessages(prev => [...prev, { text: message, sender: "user" }]);
       setFirstMessageSent(true);
       setMessage("");
@@ -110,13 +112,21 @@ const Chatbot = memo(({ theme, disabledforpreview, setChatBoxTheme }) => {
     }
   }
   useEffect(() => {
-    const ticketId = sessionStorage.getItem("ticketId")
-    if (ticketId) getMessages()
-  }, [])
-  useEffect(() => {
-    getMessages()
-    getForm()
-  }, [])
+    const storedTicketId = sessionStorage.getItem("ticketId");
+    const isSent = localStorage.getItem("FirstMessageSent");
+
+    if (isSent) {
+      setFirstMessageSent(true);
+    }
+
+    if (storedTicketId) {
+      setTicketId(storedTicketId);
+      getMessages();
+    }
+
+    getForm();
+  }, []);
+
   return (
     <div className={styles['chatbot-container']} style={{ width: isMobile ? "100vw" : "420px" }}>
       <div className={styles["chat-header"]} style={{ backgroundColor: `${headerColor}`, color: `${headerColor === "#000" || headerColor === "#33475B" || headerColor === "#036e5d" ? "white" : "black"}` }} dis>
