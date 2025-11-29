@@ -51,8 +51,8 @@ const HomeScreenChatbox = () => {
                     <div
                         style={{
                             position: isMobile ? "fixed" : "absolute",
-                            bottom: isMobile ? "0" : "100px",
-                            right: isMobile ? "0" : "0",
+                            bottom: isMobile ? "0" : "50px",
+                            right: isMobile ? "0" : "5px",
                             left: isMobile ? "0" : "auto",
                             width: isMobile ? "100vw" : "370px",
                             height: isMobile ? "100dvh" : "480px",

@@ -169,6 +169,16 @@ const ContactCenter = () => {
     return avatars[index];
   };
 
+  const getLastMessage = async () => {
+    const token = sessionStorage.getItem("token");
+    await axios.get(
+      `${import.meta.env.VITE_BACKEND_URL}/message/${activeTicket._id}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    ).then(res => {
+      console.log(res, "Wow All Messages")
+    })
+  }
+
   useEffect(() => {
     getAllTickets();
     //If the role is admin then only get team members
@@ -180,6 +190,7 @@ const ContactCenter = () => {
   // fetch messages whenever activeTicket changes
   useEffect(() => {
     if (activeTicket?._id) {
+      getLastMessage()
       getAllMessagesForTicketId(activeTicket._id);
     }
   }, [activeTicket]);

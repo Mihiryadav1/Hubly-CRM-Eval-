@@ -66,8 +66,9 @@ const Team = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
+        toast("Team Member added successfully!", { type: "success" });
         getAllTeamMembers()
-        
+
       });
 
   }
