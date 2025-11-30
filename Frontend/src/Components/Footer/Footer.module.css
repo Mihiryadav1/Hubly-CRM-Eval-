@@ -25,18 +25,17 @@
     }
 }
 
- 
+
 .footer-social {
-    margin-top: 30px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    /* margin-top: 30px; */
+    grid-column: 1 /-1;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
     gap: 20px;
 }
 
- 
+
 .icon {
     color: #555555;
     font-size: 1.5rem;
 }
- 

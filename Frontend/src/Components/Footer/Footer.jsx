@@ -62,9 +62,7 @@ const Footer = () => {
                     <span className={styles["icon"]}><FiYoutube /></span>
                     <span className={styles["icon"]}><AiOutlineDiscord /></span>
                     <span className={styles["icon"]}><FaFigma /></span>
-
-                    {/* {socialIcons.map(icon => (
-                    ))} */}
+                     
                 </div>
             </div>
         </footer >
