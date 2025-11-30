@@ -24,7 +24,8 @@ const ContactCenter = () => {
   const isResolved = activeTicket?.status === "resolved";
   const assignedToOther =
     role === "admin" &&
-    String(activeTicket?.assignedTo?._id) !== String(userId);
+    activeTicket?.assignedTo && String(activeTicket?.assignedTo?._id) !== String(userId);
+
   const noAccess = isResolved || assignedToOther;
 
 
@@ -258,12 +259,13 @@ const ContactCenter = () => {
           <p className={styles['chat-disabled']}>This chat has been resolved</p>
         )}
 
-        {assignedToOther && !isResolved && (
+        {assignedToOther && (
           <p className={styles['chat-disabled']}>
             This chat is assigned to another team member. You no longer have access.
           </p>
         )}
 
+        {messagesError && <p>Unable to load chat details</p>}
         {/* Messages Display Area */}
         {messages.length ?
           (<div className={styles['messagesContainer']}>
@@ -387,6 +389,7 @@ const ContactCenter = () => {
           {activeTicket && (
             <select
               value={activeTicket.status}
+              disabled={assignedToOther}
               onChange={(e) => {
                 setSelectedStatus(e.target.value);
                 setShowStatusPopup(true);
