@@ -15,7 +15,7 @@ const app = express();
 const allowedOrigins = [
     "http://localhost:5173",
     "https://hubly-crm-eval.onrender.com",
-    "https://hubly-crm-eval.vercel.app/"
+    "https://hubly-crm-eval.vercel.app"
 ];
 app.use(cors({
     origin: (origin, callback) => {
