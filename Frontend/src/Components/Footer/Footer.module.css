@@ -7,31 +7,29 @@
 
 .footer-columns {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     row-gap: 3rem;
 }
 
 .footer-column {
-    flex: 1 1 180px;
-    margin: 10px;
+    /* margin: 10px; */
 
     & .title {
         font-size: 1.4rem;
     }
 
     & ul {
-        background-color: green;
         list-style: none;
     }
 }
 
 
 .footer-social {
-    /* margin-top: 30px; */
     grid-column: 1 /-1;
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    display: flex;
+    justify-content: flex-end;
     gap: 20px;
+    padding-right: 2rem;
 }
 
 

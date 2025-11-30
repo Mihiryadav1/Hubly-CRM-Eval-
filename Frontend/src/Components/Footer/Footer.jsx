@@ -44,17 +44,19 @@ const Footer = () => {
                     <img src="./logo.svg" alt="" />
                 </div>
                 {Object.entries(sections).map(([title, links]) => (
-                    <div className="footer-column" key={title}>
-                        <p className={['title']}>{title}</p>
+                    <div className={styles["footer-column"]} key={title}>
+                        <p className={styles["title"]}>{title}</p>
                         <ul>
                             {links.map(link => (
-                                <p key={link}>{link}</p>
+                                <li key={link}>{link}</li>
                             ))}
                         </ul>
                     </div>
                 ))}
 
-                <div className={styles["footer-social"]}>
+
+                <div className={`${styles["footer-social"]} ${styles["footer-column"]}`}>
+
                     <span className={styles["icon"]}><CiMail /></span>
                     <span className={styles["icon"]}><CiTwitter /></span>
                     <span className={styles["icon"]}><FaInstagram /></span>
@@ -62,7 +64,7 @@ const Footer = () => {
                     <span className={styles["icon"]}><FiYoutube /></span>
                     <span className={styles["icon"]}><AiOutlineDiscord /></span>
                     <span className={styles["icon"]}><FaFigma /></span>
-                     
+
                 </div>
             </div>
         </footer >
