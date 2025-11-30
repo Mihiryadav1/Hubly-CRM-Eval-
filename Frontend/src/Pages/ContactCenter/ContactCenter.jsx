@@ -14,6 +14,7 @@ const ContactCenter = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [selectedMember, setSelectedMember] = useState(null);
   const [loadingMessages, setLoadingMessages] = useState(false);
+  const [lastMessage, setLastMessage] = useState('')
   const [messagesError, setMessagesError] = useState(false);
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState("")
@@ -169,13 +170,14 @@ const ContactCenter = () => {
     return avatars[index];
   };
 
-  const getLastMessage = async () => {
+  const getLastMessage = async (id) => {
     const token = sessionStorage.getItem("token");
     await axios.get(
-      `${import.meta.env.VITE_BACKEND_URL}/message/${activeTicket._id}`,
+      `${import.meta.env.VITE_BACKEND_URL}/message/lastMessage/${activeTicket._id}`,
       { headers: { Authorization: `Bearer ${token}` } }
     ).then(res => {
-      console.log(res, "Wow All Messages")
+      console.log(res.data.message.text, "Last message")
+      setLastMessage(res.data.message.text)
     })
   }
 
@@ -211,7 +213,6 @@ const ContactCenter = () => {
         <span>Chats</span>
         <div className={styles['ticketList']}>
           {tickets.map(ticket => {
-            const lastMessage = ticket.messages?.[ticket.messages.length - 1];
             return (
               <div
                 key={ticket._id}
@@ -228,7 +229,7 @@ const ContactCenter = () => {
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <div style={{ color: "#3A7ABD", fontWeight: "500", fontSize: "1rem" }}>{ticket.name}</div>
                   <div className={styles.ticketLastMessage}>
-                    {lastMessage ? lastMessage.text : "No messages yet"}
+                    {lastMessage && activeTicket._id === ticket._id ? lastMessage : ""}
                   </div>
                 </div>
               </div>
@@ -264,31 +265,40 @@ const ContactCenter = () => {
         )}
 
         {/* Messages Display Area */}
-        <div className={styles['messagesContainer']}>
-          {messages.map(msg => {
-            const isMine = msg.sender === "team";
-            return (
-              <div
-                key={msg._id}
-                className={`${styles.messageRow} ${isMine ? styles.mine : styles.theirs
-                  }`}
-              >
-                <div className={styles.messageBubble}>
-                  <p className={styles.messageText}>{msg.text}</p>
-                  <span className={styles.messageTime}>
-                    {msg.createdAt
-                      ? new Date(msg.createdAt).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit"
-                      })
-                      : ""}
-                  </span>
+        {messages.length ?
+          (<div className={styles['messagesContainer']}>
+            {messages.map(msg => {
+              const isMine = msg.sender === "team";
+              return (
+                <div
+                  key={msg._id}
+                  className={`${styles.messageRow} ${isMine ? styles.mine : styles.theirs
+                    }`}
+                >
+                  <div className={styles.messageBubble}>
+                    <p className={styles.messageText}>{msg.text}</p>
+                    <span className={styles.messageTime}>
+                      {msg.createdAt
+                        ? new Date(msg.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit"
+                        })
+                        : ""}
+                    </span>
+                  </div>
+                  {msg.sender !== "team" && (<div style={{ color: "Red", fontSize: ".8rem", display: "flex", alignItems: "flex-end", paddingLeft: "1rem" }}>{msg.missed ? "missed chat" : ""}</div>)}
                 </div>
-                {msg.sender !== "team" && (<div style={{ color: "Red", fontSize: ".8rem", display: "flex", alignItems: "flex-end", paddingLeft: "1rem" }}>{msg.missed ? "missed chat" : ""}</div>)}
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>) : (
+            <>
+              {loadingMessages && (<div style={{ height: "100vw", height: "100vh", display: "flex", justifyContent: "center", alignItems: "center", gap: "2rem" }}>
+                <img src="https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUybGoyYzJhbXR1aWNqYXZtZHo4M3Q5cXJvbzlsZzd3OGR6bXhkMHlzcCZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/L05HgB2h6qICDs5Sms/200.gif" alt="" width='60px' />
+                <span style={{ fontSize: "1.5rem" }}>Loading...</span>
+              </div>)}
+            </>)
+        }
+
 
         {/* //Input for chatting */}
         <div className={styles["input"]}>

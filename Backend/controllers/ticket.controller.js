@@ -173,3 +173,4 @@ export const assignTicket = async (req, res) => {
         });
     }
 }
+

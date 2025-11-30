@@ -200,3 +200,34 @@ export const getAverageReplyTime = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+
+//Last message for ticket
+export const getLastMessageForTicket = async (req, res) => {
+  try {
+    const ticketId = req.params.ticketId;
+
+    // Find ticket
+    const ticket = await Ticket.findById(ticketId);
+    if (!ticket) {
+      return res.status(404).json({ message: "Ticket not found" });
+    }
+
+    // Get last message
+    const lastMessage = await Message.findOne({ ticketId: ticket._id })
+      .sort({ createdAt: -1 }) 
+      .populate("sender", "name email");
+
+    if (!lastMessage) {
+      return res.status(200).json({ success: true, message: null });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: lastMessage
+    });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
