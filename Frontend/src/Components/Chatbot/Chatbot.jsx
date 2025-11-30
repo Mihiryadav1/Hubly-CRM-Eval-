@@ -48,7 +48,7 @@ const Chatbot = memo(({ theme, disabledforpreview }) => {
   //Send Message
   const handleSendMessage = async () => {
     if (!firstMessageSent) {
-      localStorage.setItem("FirstMessageSent", true)
+      sessionStorage.setItem("FirstMessageSent", true)
       setFirstMessageSent(true)
       setAllMessages(prev => [...prev, { text: message, sender: "user" }]);
       setFirstMessageSent(true);
@@ -113,7 +113,7 @@ const Chatbot = memo(({ theme, disabledforpreview }) => {
   }
   useEffect(() => {
     const storedTicketId = sessionStorage.getItem("ticketId");
-    const isSent = localStorage.getItem("FirstMessageSent");
+    const isSent = sessionStorage.getItem("FirstMessageSent");
 
     if (isSent) {
       setFirstMessageSent(true);
