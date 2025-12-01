@@ -130,7 +130,7 @@ const ContactCenter = () => {
       setMessagesError(true);
     }
     finally {
-      setLoadingMessages(false);   
+      setLoadingMessages(false);
     }
   };
 
@@ -174,19 +174,6 @@ const ContactCenter = () => {
     return avatars[index];
   };
 
-  // const getLastMessage = async () => {
-  //   const token = sessionStorage.getItem("token");
-  //   await axios.get(
-  //     `${import.meta.env.VITE_BACKEND_URL}/message/lastMessage/${activeTicket._id}`,
-  //     { headers: { Authorization: `Bearer ${token}` } }
-  //   ).then(res => {
-  //     console.log(res.data.message, "Last message")
-  //     setLastMessage(prev => ({
-  //       ...prev,
-  //       [activeTicket._id]: res.data.message || ""
-  //     }));
-  //   })
-  // }
   const getLastMessage = async () => {
     if (!activeTicket?._id) return;   // <-- add this
     const token = sessionStorage.getItem("token");
@@ -234,30 +221,33 @@ const ContactCenter = () => {
       <div className={styles['chats-container']}>
         <div style={{ marginBottom: "1.2rem", fontSize: "1.2rem" }}>Chats</div>
         <div className={styles['ticketList']}>
-          {tickets.map(ticket => {
-            return (
-              <div
-                key={ticket._id}
-                className={`${styles.ticketItem} ${activeTicket?._id === ticket._id ? styles.active : ""}`}
-                onClick={() => {
-                  setActiveTicket(ticket)
-                }}
-              >
-                <img
-                  src={getAvatar(ticket.name)}
-                  alt={ticket.name}
-                  className={styles['avatar']}
-                />
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <div style={{ color: "#3A7ABD", fontWeight: "500", fontSize: "1rem" }}>{ticket.name}</div>
-                  <div className={styles.ticketLastMessage}>
-                    {lastMessage?.[ticket._id]?.text ?? "No Message Yet"}
+          {
+            tickets.length ? (<>
+              {tickets.map(ticket => {
+                return (
+                  <div
+                    key={ticket._id}
+                    className={`${styles.ticketItem} ${activeTicket?._id === ticket._id ? styles.active : ""}`}
+                    onClick={() => {
+                      setActiveTicket(ticket)
+                    }}
+                  >
+                    <img
+                      src={getAvatar(ticket.name)}
+                      alt={ticket.name}
+                      className={styles['avatar']}
+                    />
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <div style={{ color: "#3A7ABD", fontWeight: "500", fontSize: "1rem" }}>{ticket.name}</div>
+                      <div className={styles.ticketLastMessage}>
+                        {lastMessage?.[ticket._id]?.text ?? "No Message Yet"}
 
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            )
-          })}
+                )
+              })}</>) : (<><h3>No Tickets</h3></>)
+          }
         </div>
       </div>
 
@@ -289,7 +279,7 @@ const ContactCenter = () => {
 
         {messagesError && <p>Unable to load chat details</p>}
         {/* Messages Display Area */}
-        {messages.length ?
+        {/* {messages.length ?
           (<div className={styles['messagesContainer']}>
             {messages.map(msg => {
               const isMine = msg.sender === "team";
@@ -316,12 +306,56 @@ const ContactCenter = () => {
             })}
           </div>) : (
             <>
-              {loadingMessages && (<div style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center", gap: "2rem" }}>
+              {loadingMessages && !messagesError && (<div style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center", gap: "2rem" }}>
                 <img src="https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUybGoyYzJhbXR1aWNqYXZtZHo4M3Q5cXJvbzlsZzd3OGR6bXhkMHlzcCZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/L05HgB2h6qICDs5Sms/200.gif" alt="" width='60px' />
                 <span style={{ fontSize: "1.5rem" }}>Loading...</span>
               </div>)}
             </>)
-        }
+        } */}
+
+        {loadingMessages ? (
+          // ⏳ SHOW LOADING
+          <div style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center", gap: "2rem" }}>
+            <img src="https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUybGoyYzJhbXR1aWNqYXZtZHo4M3Q5cXJvbzlsZzd3OGR6bXhkMHlzcCZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/L05HgB2h6qICDs5Sms/200.gif" alt="" width='60px' />
+            <span style={{ fontSize: "1.5rem" }}>Loading...</span>
+          </div>
+        ) : messages.length > 0 ? (
+          // 💬 SHOW MESSAGES
+          <div className={styles['messagesContainer']}>
+            {messages.map(msg => {
+              const isMine = msg.sender === "team";
+              return (
+                <div
+                  key={msg._id}
+                  className={`${styles.messageRow} ${isMine ? styles.mine : styles.theirs}`}
+                >
+                  <div className={styles.messageBubble}>
+                    <p className={styles.messageText}>{msg.text}</p>
+                    <span className={styles.messageTime}>
+                      {msg.createdAt
+                        ? new Date(msg.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit"
+                        })
+                        : ""}
+                    </span>
+                  </div>
+                  {msg.sender !== "team" && (
+                    <div style={{ color: "Red", fontSize: ".8rem", paddingLeft: "1rem" }}>
+                      {msg.missed ? "missed chat" : ""}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          // ❗ SHOW NO MESSAGES
+          <div style={{ height: "100%", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "1.2rem", opacity: 0.7 }}>
+            No messages yet
+          </div>
+        )}
+
 
 
         {/* //Input for chatting */}
@@ -358,7 +392,7 @@ const ContactCenter = () => {
           )}
         </div>
         <div style={{ marginTop: "1rem" }}>
-          <p>Teammates</p>
+          {role === "admin" && <p>Teammates</p>}
           <div> {activeTicket && role === "admin" && (
             <select
               value={activeTicket.assignedTo?._id || ""}
