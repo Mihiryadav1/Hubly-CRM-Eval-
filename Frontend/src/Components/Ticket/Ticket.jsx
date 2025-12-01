@@ -7,7 +7,7 @@ const Ticket = memo(({ ticketId, createdAt, createdBy, email, phone, status }) =
             timeZone: "Asia/Kolkata", // IST
             hour: "numeric",
             minute: "numeric",
-            second: "numeric",
+            // second: "numeric",
             hour12: true,
         });
     };
