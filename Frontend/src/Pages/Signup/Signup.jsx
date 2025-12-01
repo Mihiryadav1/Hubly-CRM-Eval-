@@ -31,14 +31,27 @@ const Signup = () => {
         if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
         if (!formData.email.trim()) newErrors.email = "Email is required";
         if (!formData.password.trim()) newErrors.password = "Password is required";
-        if (!formData.confirmPassword.trim()) newErrors.confirmPassword = "Confirm your password";
+        else if (formData.password.length < 8) newErrors.password = "Password should be 8 or more characters with uppercase, lowercase, number & special character";
+        else {
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._-])[A-Za-z\d@$!%*?&._-]{8,}$/;
+            if (!passwordRegex.test(formData.password)) {
+                newErrors.password =
+                    "Password must contain uppercase, lowercase, number & special character";
+            }
+        }
 
+        if (!formData.confirmPassword.trim()) newErrors.confirmPassword = "Confirm your password";
         if (formData.password !== formData.confirmPassword)
             newErrors.confirmPassword = "Passwords do not match";
-
         if (!formData.termsAccepted)
             newErrors.termsAccepted = "You must accept the terms & conditions";
+
         setErrors(newErrors);
+        if (Object.keys(newErrors).length > 0) {
+            toast.error("Invalid Form Fields.");
+            return;
+        }
+
         try {
             await axios.post(
                 `${import.meta.env.VITE_BACKEND_URL}/auth/signup`,
