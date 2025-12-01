@@ -149,7 +149,7 @@ const ContactCenter = () => {
       ).then(res => {
         // console.log(res)
         setMessages(prev => [...prev, res.data.message]);
-        // getAllMessagesForTicketId(activeTicket._id)
+        getAllMessagesForTicketId(activeTicket._id)
         setNewMessage('');
       })
 
