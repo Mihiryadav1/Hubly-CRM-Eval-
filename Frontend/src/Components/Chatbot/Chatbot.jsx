@@ -209,6 +209,27 @@ const Chatbot = memo(({ theme, disabledforpreview }) => {
             )
           }
 
+          {
+            disabledforpreview && (<form onSubmit={createTicket}>
+              <div className={formStyle['configuration-cards']}>
+                <h4>{customerForm.introduceHeading}</h4>
+                <div className={formStyle['input-group']}>
+                  <label htmlFor="name">{customerForm.nameLabel}</label>
+                  <input type="text" name='name' placeholder='Your name' value={customerForm.name} onChange={handleFormChange} />
+                </div>
+                <div className={formStyle['input-group']}>
+                  <label htmlFor="phone">{customerForm.phoneLabel}</label>
+                  <input type="text" name='phone' placeholder='+1 (000) 10 - 000' value={customerForm.phone} onChange={handleFormChange} />
+                </div>
+                <div className={formStyle['input-group']}>
+                  <label htmlFor="email">{customerForm.emailLabel}</label>
+                  <input type="email" name='email' placeholder='example@gmail.com' value={customerForm.email} onChange={handleFormChange} />
+                </div>
+                <div style={{ textAlign: "center" }}>  <button className={formStyle['thankBtn']}>Thank You</button></div>
+              </div>
+            </form>)
+          }
+
 
         </div>
       </div>
