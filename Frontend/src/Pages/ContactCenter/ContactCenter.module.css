@@ -82,6 +82,7 @@
     border: 1px solid var(--secondary-gray);
     display: flex;
     align-items: center;
+    background-color: white;
     gap: 0.5rem;
 
 
