@@ -10,7 +10,7 @@
 
 ### Example Firstname  is Arav
 ### LastName is Borris
-### Username will be Aray Borris
+### Username will be Aray Borris (With space included) 
 
 
 
