@@ -7,9 +7,9 @@
 ### User Details
 # Username => FirstName LastName
 
-Example Firstname  is Arav
-        LastName is Borris
-        Username will be Aray Borris
+# Example Firstname  is Arav
+# LastName is Borris
+# Username will be Aray Borris
 
 
 
