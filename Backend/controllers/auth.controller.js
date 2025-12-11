@@ -16,11 +16,6 @@ export const signup = async (req, res) => {
         }
         else {
             //only admin can create additional users
-            if (!req.user || req.user.role !== "admin") {
-                return res.status(403).json({
-                    message: "Only admin can create team members."
-                });
-            }
             role = "user"
         }
 
